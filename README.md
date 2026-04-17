@@ -32,6 +32,6 @@ python3 -m http.server 8080
 
 ## Project
 
-Currently at blueprint stage. Technical architecture is fully scoped against the Adobe Express add-on SDK. 8-week build plan ready to execute. Marketplace release targets September 2026.
+Currently at blueprint stage. Technical architecture is fully scoped against the Adobe Express add-on SDK. 8-week build plan ready to execute. Marketplace release targets August 2026.
 
 Built solo by [Zareen Fatima](https://www.linkedin.com/in/zareen-fatima-476110244/) in Bengaluru, India.
