@@ -5,302 +5,454 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>SendReady — Design emails in Adobe Express. Send them anywhere.</title>
 <meta name="description" content="SendReady turns any Adobe Express design into clean, responsive HTML email that pastes directly into Mailchimp, Klaviyo, or HubSpot and renders perfectly across Gmail, Outlook, and mobile." />
+<meta property="og:title" content="SendReady — Design emails in Adobe Express. Send them anywhere." />
+<meta property="og:description" content="The one-click design-to-responsive-HTML email exporter that Adobe Express never had." />
+<meta name="theme-color" content="#050f18" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<style>
-  :root {
-    --bg: #071825;
-    --panel: #0b2030;
-    --ink: #e9f1f5;
-    --muted: #8aa2b1;
-    --accent: #17b5b0;
-    --accent-soft: rgba(23, 181, 176, 0.12);
-    --line: rgba(233, 241, 245, 0.08);
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
-  body {
-    font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-    font-size: 16px;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-  a { color: var(--accent); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  .wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
-
-  /* Nav */
-  nav {
-    position: sticky; top: 0; z-index: 10;
-    background: rgba(7, 24, 37, 0.85);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--line);
-  }
-  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
-  .logo { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -0.01em; }
-  .logo-dot { width: 10px; height: 10px; background: var(--accent); border-radius: 2px; }
-  nav ul { list-style: none; display: flex; gap: 28px; padding: 0; margin: 0; }
-  nav a { color: var(--muted); font-size: 14px; }
-  nav a:hover { color: var(--ink); text-decoration: none; }
-  @media (max-width: 640px) { nav ul { display: none; } }
-
-  /* Hero */
-  header { padding: 96px 0 72px; border-bottom: 1px solid var(--line); }
-  .eyebrow { color: var(--accent); font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px; }
-  h1 { font-size: 56px; line-height: 1.05; letter-spacing: -0.03em; font-weight: 700; margin: 0 0 24px; }
-  .lede { font-size: 20px; color: var(--muted); max-width: 620px; margin: 0 0 36px; line-height: 1.5; }
-  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
-  .btn {
-    display: inline-block; padding: 13px 22px; border-radius: 6px;
-    font-weight: 500; font-size: 15px; transition: all 0.15s ease;
-  }
-  .btn-primary { background: var(--accent); color: #06222b; }
-  .btn-primary:hover { background: #1ecfc9; text-decoration: none; }
-  .btn-secondary { color: var(--ink); border: 1px solid var(--line); }
-  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
-
-  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 72px; }
-  .stat { border-left: 2px solid var(--accent); padding-left: 16px; }
-  .stat-num { font-size: 32px; font-weight: 600; letter-spacing: -0.02em; }
-  .stat-label { color: var(--muted); font-size: 13px; margin-top: 4px; }
-  @media (max-width: 640px) {
-    h1 { font-size: 40px; }
-    .lede { font-size: 18px; }
-    header { padding: 56px 0 48px; }
-    .stats { grid-template-columns: 1fr; gap: 16px; }
-  }
-
-  /* Sections */
-  section { padding: 80px 0; border-bottom: 1px solid var(--line); }
-  .section-num { color: var(--accent); font-size: 13px; font-weight: 500; letter-spacing: 0.08em; }
-  h2 { font-size: 32px; line-height: 1.15; letter-spacing: -0.02em; font-weight: 600; margin: 8px 0 28px; }
-  h3 { font-size: 17px; font-weight: 600; margin: 0 0 8px; color: var(--ink); }
-  p { color: var(--muted); margin: 0 0 16px; }
-  p.body-ink { color: #cddae2; }
-
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
-  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-  @media (max-width: 780px) {
-    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; gap: 24px; }
-  }
-
-  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 24px; }
-  .card p { margin: 0; font-size: 14.5px; }
-
-  .steps { display: flex; flex-direction: column; gap: 4px; margin-top: 12px; }
-  .step { display: grid; grid-template-columns: 72px 1fr; gap: 24px; padding: 24px 0; border-top: 1px solid var(--line); }
-  .step-num { color: var(--accent); font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; }
-  .step p { margin-top: 4px; }
-
-  /* Pricing */
-  .pricing { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-  @media (max-width: 780px) { .pricing { grid-template-columns: 1fr; } }
-  .plan { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 28px; display: flex; flex-direction: column; }
-  .plan.featured { border-color: var(--accent); }
-  .plan-name { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-  .plan-price { font-size: 38px; font-weight: 600; letter-spacing: -0.02em; margin: 12px 0 4px; }
-  .plan-price small { font-size: 14px; color: var(--muted); font-weight: 400; }
-  .plan ul { list-style: none; padding: 0; margin: 20px 0 0; font-size: 14.5px; color: #cddae2; }
-  .plan li { padding: 6px 0; border-top: 1px solid var(--line); }
-  .plan li:first-child { border-top: 0; }
-
-  /* About */
-  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
-  @media (max-width: 780px) { .about-grid { grid-template-columns: 1fr; } }
-  .contact-card { background: var(--accent-soft); border-left: 3px solid var(--accent); border-radius: 4px; padding: 24px; }
-  .contact-card .label { color: var(--accent); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
-  .contact-card p { color: var(--ink); margin: 2px 0; font-size: 15px; }
-
-  /* Footer */
-  footer { padding: 40px 0 60px; }
-  .footer-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
-  footer p { font-size: 13px; color: var(--muted); margin: 0; }
-  .socials { display: flex; gap: 16px; }
-  .socials a { color: var(--muted); font-size: 13px; }
-  .socials a:hover { color: var(--accent); text-decoration: none; }
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2317b5b0'/%3E%3Cpath d='M18 34l8 8 20-20' stroke='%23042028' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
 </head>
 <body>
 
 <nav>
   <div class="wrap">
-    <div class="logo"><span class="logo-dot"></span> SendReady</div>
+    <a class="logo" href="#top">
+      <span class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </span>
+      SendReady
+    </a>
     <ul>
       <li><a href="#problem">Problem</a></li>
       <li><a href="#product">Product</a></li>
       <li><a href="#how">How it works</a></li>
       <li><a href="#pricing">Pricing</a></li>
-      <li><a href="#about">About</a></li>
+      <li><a href="#faq">FAQ</a></li>
     </ul>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="#about">Contact</a>
+      <a class="btn btn-primary" href="#pricing">Get SendReady
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
   </div>
 </nav>
 
-<header>
-  <div class="wrap">
-    <div class="eyebrow">Adobe Express Add-on</div>
-    <h1>Design emails in Adobe Express.<br/>Send them anywhere.</h1>
-    <p class="lede">The one-click design-to-responsive-HTML email exporter that Adobe Express never had. Built for marketers, agencies, and every small business sending newsletters.</p>
-    <div class="cta-row">
-      <a class="btn btn-primary" href="#how">See how it works</a>
-      <a class="btn btn-secondary" href="#about">Contact</a>
-    </div>
+<main id="top">
 
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-num">&lt;1 min</div>
-        <div class="stat-label">From Express design to pasted email</div>
+<!-- =====================================================
+     HERO
+     ===================================================== -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="reveal">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> Adobe Express Add-on · v1.0 / April 2026</div>
+        <h1 class="display">Design emails in Adobe Express. <span class="accent">Send them anywhere.</span></h1>
+        <p class="lede">The one-click design-to-responsive-HTML email exporter Adobe Express never had. Paste directly into Mailchimp, Klaviyo, or HubSpot. Renders perfectly across Gmail, Outlook, and mobile.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary btn-lg" href="#how">See how it works
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+          <a class="btn btn-ghost btn-lg" href="#pricing">View pricing</a>
+        </div>
+        <div class="hero-meta">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Under 1 minute design-to-paste</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> MJML-compiled output</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> No API lock-in</span>
+        </div>
       </div>
-      <div class="stat">
-        <div class="stat-num">4+</div>
-        <div class="stat-label">Email clients with live preview</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">0</div>
-        <div class="stat-label">Competing add-ons in Express today</div>
+
+      <div class="reveal">
+        <div class="mockup">
+          <div class="mockup-bar">
+            <span class="mockup-dot"></span>
+            <span class="mockup-dot"></span>
+            <span class="mockup-dot"></span>
+            <span class="mockup-title">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>
+              Adobe Express · SendReady panel
+            </span>
+          </div>
+          <div class="mockup-body">
+            <div class="mockup-pane express-canvas">
+              <div class="pane-label"><span class="ldot"></span> Your Express design</div>
+              <div class="ec-hero"></div>
+              <div class="ec-line"></div>
+              <div class="ec-line short"></div>
+              <div class="ec-line tiny"></div>
+              <div class="ec-btn"></div>
+            </div>
+            <div class="mockup-pane">
+              <div class="pane-label"><span class="ldot"></span> Live email preview</div>
+              <div class="preview-tabs">
+                <span class="preview-tab active">Gmail</span>
+                <span class="preview-tab">Outlook</span>
+                <span class="preview-tab">Apple</span>
+                <span class="preview-tab">Mobile</span>
+              </div>
+              <div class="preview-shell">
+                <div class="preview-subject">Your April newsletter is here →</div>
+                <div class="preview-from">hello@brand.com · to you</div>
+                <div class="preview-hero-img"></div>
+                <div class="preview-h">A quiet month of big updates</div>
+                <p class="preview-p">Here's everything we shipped this month, plus what's landing next for your team.</p>
+                <span class="preview-cta">Read the full update</span>
+              </div>
+            </div>
+          </div>
+          <div class="float-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Bulletproof HTML ready
+          </div>
+          <div class="float-badge-2">
+            <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            Copied to clipboard
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</header>
+</section>
 
+<!-- =====================================================
+     LOGO STRIP
+     ===================================================== -->
+<section class="logos reveal" style="padding-top: 24px;">
+  <div class="wrap">
+    <div class="logos-label">Pastes into every email platform you already use</div>
+    <div class="logos-row">
+      <span>Mailchimp</span>
+      <span>Klaviyo</span>
+      <span>HubSpot</span>
+      <span>ConvertKit</span>
+      <span>MailerLite</span>
+      <span>Constant Contact</span>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     PROBLEM
+     ===================================================== -->
 <section id="problem">
   <div class="wrap">
-    <div class="section-num">01 / The Problem</div>
-    <h2>Express exports images and PDFs. It does not export email HTML.</h2>
-    <div class="grid-2">
-      <p class="body-ink">A small business owner designs a beautiful newsletter in Adobe Express. Brand colors match. Typography is clean. Then comes the moment of truth: sending it. And the whole workflow falls apart.</p>
-      <p>Marketers screenshot the design and paste it as a giant broken image into Mailchimp. They rebuild from scratch in a clunky email editor. Or they pay a developer to hand-code HTML. Each option kills the speed advantage of using Express in the first place.</p>
+    <div class="section-head reveal">
+      <div class="section-num">01 / The Problem</div>
+      <h2>Express exports images and PDFs. It does not export email.</h2>
+      <p>Marketers design beautiful newsletters in Express, then hit a wall. Three bad options, all of them slow.</p>
+    </div>
+    <div class="compare">
+      <div class="compare-card before reveal">
+        <div class="compare-tag bad">Today's workflow</div>
+        <h3>Hours of friction, every send</h3>
+        <ul class="compare-list bad">
+          <li>Screenshot the design, paste as a giant broken image</li>
+          <li>Rebuild from scratch in a clunky email editor</li>
+          <li>Lose the brand kit, fonts, and Express templates</li>
+          <li>Hire a developer to hand-code HTML</li>
+          <li>Pray Outlook doesn't destroy the layout</li>
+        </ul>
+      </div>
+      <div class="compare-card after reveal">
+        <div class="compare-tag good">With SendReady</div>
+        <h3>One button. One minute. Every inbox.</h3>
+        <ul class="compare-list good">
+          <li>Keep designing in Express with your full brand kit</li>
+          <li>One click to compile to bulletproof HTML</li>
+          <li>Live preview across Gmail, Outlook, Apple, mobile</li>
+          <li>Paste straight into Mailchimp, Klaviyo, HubSpot</li>
+          <li>Send an email that actually renders, every time</li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
 
+<!-- =====================================================
+     PRODUCT / FEATURES
+     ===================================================== -->
 <section id="product">
   <div class="wrap">
-    <div class="section-num">02 / The Product</div>
-    <h2>A focused, single-purpose add-on. One job, done right.</h2>
-    <div class="grid-2" style="margin-top: 40px;">
-      <div>
+    <div class="section-head reveal">
+      <div class="section-num">02 / The Product</div>
+      <h2>A focused, single-purpose add-on. One job, done right.</h2>
+      <p>SendReady isn't a platform. It's the missing bridge between the Express canvas and every email tool marketers already use.</p>
+    </div>
+    <div class="features">
+      <div class="feature reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
         <h3>MJML-backed output</h3>
-        <p>Compiles to MJML — the open-source email framework used by Airbnb. Handles every Outlook bug, every mobile reflow edge case. Bulletproof as hand-coded email HTML.</p>
+        <p>Compiles to MJML, the open-source email framework used by Airbnb. Handles every Outlook quirk and mobile reflow edge case. Bulletproof as hand-coded HTML.</p>
       </div>
-      <div>
+      <div class="feature reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
         <h3>Live multi-client preview</h3>
-        <p>See exactly how the email renders in Gmail, Outlook 365, Apple Mail, and mobile — before you copy the HTML. Unsafe elements flagged with one-click fallbacks.</p>
+        <p>See exactly how the email renders in Gmail, Outlook 365, Apple Mail, and mobile — before you export. Unsafe elements flagged with one-click fallbacks.</p>
       </div>
-      <div>
-        <h3>Copy-paste universal compatibility</h3>
-        <p>Pure HTML that pastes into Mailchimp, Klaviyo, HubSpot, ConvertKit, MailerLite, Constant Contact. No API integration. No platform lock-in.</p>
+      <div class="feature reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        </div>
+        <h3>Copy-paste universal</h3>
+        <p>Pure HTML that pastes into Mailchimp, Klaviyo, HubSpot, ConvertKit, MailerLite, Constant Contact. No API integration, no lock-in.</p>
       </div>
-      <div>
+      <div class="feature reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
         <h3>Minimal AI, maximum reliability</h3>
-        <p>AI plays a small, tasteful role: subject-line variants and alt-text for accessibility. The core conversion logic is deterministic MJML compilation, not AI.</p>
+        <p>Three AI subject-line variants and accessibility alt-text. The core conversion logic is deterministic MJML compilation — predictable and debuggable.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+        </div>
+        <h3>Brand kit preserved</h3>
+        <p>Fonts, colors, logos, and templates from your Express brand kit carry through to the final HTML. Typography maps to email-safe fallback stacks automatically.</p>
+      </div>
+      <div class="feature reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3>Under two seconds</h3>
+        <p>The Document Sandbox API reads your Express structure, maps every layer, and compiles to production HTML in under two seconds. No waiting, no spinners.</p>
       </div>
     </div>
   </div>
 </section>
 
+<!-- =====================================================
+     HOW IT WORKS
+     ===================================================== -->
 <section id="how">
   <div class="wrap">
-    <div class="section-num">03 / How It Works</div>
-    <h2>Three screens. One minute. Every major email client covered.</h2>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">01</div>
-        <div>
-          <h3>Design in Express</h3>
-          <p>Use templates, brand kit, fonts, stock images — the way you already design everything else. SendReady doesn't add friction to the design phase.</p>
+    <div class="section-head left reveal" style="text-align: left;">
+      <div class="section-num">03 / How It Works</div>
+      <h2>Three screens. One minute. Every major email client covered.</h2>
+    </div>
+
+    <div class="steps-grid">
+      <div>
+        <div class="step active">
+          <div class="step-head">
+            <div class="step-num">01</div>
+            <h3>Design in Express</h3>
+          </div>
+          <p>Templates, brand kit, Adobe Fonts, Firefly imagery. Keep designing the way you already do.</p>
+        </div>
+        <div class="step">
+          <div class="step-head">
+            <div class="step-num">02</div>
+            <h3>Open SendReady</h3>
+          </div>
+          <p>The panel reads your document and compiles it to production HTML in under two seconds.</p>
+        </div>
+        <div class="step">
+          <div class="step-head">
+            <div class="step-num">03</div>
+            <h3>Preview across clients</h3>
+          </div>
+          <p>Split-screen live previews. Unsafe elements flagged with one-click fallback suggestions.</p>
+        </div>
+        <div class="step">
+          <div class="step-head">
+            <div class="step-num">04</div>
+            <h3>Copy or download</h3>
+          </div>
+          <p>Paste-ready HTML to your clipboard or an .html file for developers. AI subject-line variants included.</p>
+        </div>
+        <div class="step">
+          <div class="step-head">
+            <div class="step-num">05</div>
+            <h3>Paste and send</h3>
+          </div>
+          <p>Drop into Mailchimp, Klaviyo, HubSpot, or any platform that accepts HTML. Hit send.</p>
         </div>
       </div>
-      <div class="step">
-        <div class="step-num">02</div>
-        <div>
-          <h3>Open SendReady</h3>
-          <p>The panel reads the document through the Document Sandbox API, maps every layer to its email-safe MJML equivalent, and compiles to production-grade HTML. Under two seconds.</p>
+
+      <div class="step-visual reveal">
+        <!-- Pane 1: Design -->
+        <div class="step-pane active">
+          <div class="sp-label">Adobe Express canvas</div>
+          <div class="express-canvas" style="gap: 10px;">
+            <div class="ec-hero" style="aspect-ratio: 16/6;"></div>
+            <div class="ec-line"></div>
+            <div class="ec-line short"></div>
+            <div class="ec-line tiny"></div>
+            <div class="ec-line short"></div>
+            <div class="ec-btn"></div>
+          </div>
+          <p style="margin-top: 18px; font-size: 13px;">Use templates, brand kit, Adobe Fonts, Firefly imagery. SendReady waits until you're ready to export.</p>
         </div>
-      </div>
-      <div class="step">
-        <div class="step-num">03</div>
-        <div>
-          <h3>Preview across clients</h3>
-          <p>A split-screen live preview shows exactly how the email renders in Gmail, Outlook 365, Apple Mail, and mobile webkit. Unsafe elements get flagged with a one-click fallback.</p>
+
+        <!-- Pane 2: Open -->
+        <div class="step-pane">
+          <div class="sp-label">Compiling to MJML</div>
+          <div class="code-snippet">
+<span class="tag">&lt;mj-section</span> <span class="attr">background-color</span>=<span class="str">"#0b2030"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;mj-column&gt;</span>
+    <span class="tag">&lt;mj-image</span> <span class="attr">src</span>=<span class="str">"hero.png"</span> <span class="attr">alt</span>=<span class="str">"April newsletter hero"</span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;mj-text</span> <span class="attr">font-family</span>=<span class="str">"Inter, Helvetica, sans-serif"</span>
+            <span class="attr">font-size</span>=<span class="str">"24px"</span> <span class="attr">font-weight</span>=<span class="str">"600"</span><span class="tag">&gt;</span>
+      A quiet month of big updates
+    <span class="tag">&lt;/mj-text&gt;</span>
+    <span class="tag">&lt;mj-button</span> <span class="attr">background-color</span>=<span class="str">"#17b5b0"</span> <span class="attr">href</span>=<span class="str">"{{link}}"</span><span class="tag">&gt;</span>
+      Read the full update
+    <span class="tag">&lt;/mj-button&gt;</span>
+  <span class="tag">&lt;/mj-column&gt;</span>
+<span class="tag">&lt;/mj-section&gt;</span>
+          </div>
+          <p style="margin-top: 14px; font-size: 13px;">Every Express layer maps to an email-safe MJML equivalent. Compiled in under two seconds.</p>
         </div>
-      </div>
-      <div class="step">
-        <div class="step-num">04</div>
-        <div>
-          <h3>Export</h3>
-          <p>Copy HTML drops paste-ready output onto the clipboard. Download HTML saves a file for developers. AI layer offers three subject-line variants plus auto-generated alt-text.</p>
+
+        <!-- Pane 3: Preview -->
+        <div class="step-pane">
+          <div class="sp-label">Multi-client preview</div>
+          <div class="device-row">
+            <div class="device"><span class="device-label">GMAIL</span><div class="device-content"><div class="img"></div><div class="bar"></div><div class="bar" style="width: 70%;"></div><div class="bar accent"></div></div></div>
+            <div class="device"><span class="device-label">OUTLOOK</span><div class="device-content"><div class="img"></div><div class="bar"></div><div class="bar" style="width: 70%;"></div><div class="bar accent"></div></div></div>
+            <div class="device"><span class="device-label">APPLE</span><div class="device-content"><div class="img"></div><div class="bar"></div><div class="bar" style="width: 70%;"></div><div class="bar accent"></div></div></div>
+            <div class="device"><span class="device-label">MOBILE</span><div class="device-content"><div class="img"></div><div class="bar"></div><div class="bar" style="width: 70%;"></div><div class="bar accent"></div></div></div>
+          </div>
+          <div style="margin-top: 18px;" class="flag-row">
+            <div class="flag warn">
+              <span class="flag-dot"></span>
+              <span class="flag-text">Gradient button won't render in Outlook 365<small>Fallback: solid teal (#17b5b0)</small></span>
+              <span class="flag-action">Apply fix →</span>
+            </div>
+            <div class="flag ok">
+              <span class="flag-dot"></span>
+              <span class="flag-text">Typography, layout, and links pass all 4 clients</span>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="step">
-        <div class="step-num">05</div>
-        <div>
-          <h3>Paste and send</h3>
-          <p>Paste into Mailchimp, Klaviyo, HubSpot, or any email platform that accepts HTML. Finished Express design to inbox takes minutes instead of hours.</p>
+
+        <!-- Pane 4: Export -->
+        <div class="step-pane">
+          <div class="sp-label">Export options</div>
+          <div class="flag-row">
+            <div class="flag ok">
+              <span class="flag-dot"></span>
+              <span class="flag-text">Copy HTML<small>Paste-ready, 14.2 KB · clipboard</small></span>
+              <span class="flag-action">Copy</span>
+            </div>
+            <div class="flag">
+              <span class="flag-dot" style="background: var(--muted);"></span>
+              <span class="flag-text">Download .html<small>For developers and larger teams</small></span>
+              <span class="flag-action" style="color: var(--muted);">Download</span>
+            </div>
+          </div>
+          <div style="margin-top: 20px;">
+            <div class="pane-label"><span class="ldot"></span> AI subject-line variants</div>
+            <div class="flag" style="margin-bottom: 6px;"><span class="flag-text" style="font-weight: 400;">A quiet month of big updates</span></div>
+            <div class="flag" style="margin-bottom: 6px;"><span class="flag-text" style="font-weight: 400;">April: everything we shipped this month</span></div>
+            <div class="flag"><span class="flag-text" style="font-weight: 400;">The updates you've been waiting for are here</span></div>
+          </div>
+        </div>
+
+        <!-- Pane 5: Paste -->
+        <div class="step-pane">
+          <div class="sp-label">Paste into your ESP</div>
+          <div class="paste-strip"><span>Mailchimp · Code view</span><span style="margin-left: auto;" class="ok">⌘V pasted</span></div>
+          <div class="paste-strip"><span>Klaviyo · Custom HTML block</span><span style="margin-left: auto;" class="ok">⌘V pasted</span></div>
+          <div class="paste-strip"><span>HubSpot · Email template editor</span><span style="margin-left: auto;" class="ok">⌘V pasted</span></div>
+          <p style="margin-top: 14px; font-size: 13px;">Works in every major ESP. No API keys, no webhooks, no lock-in. Marketer keeps full control of their sending infrastructure.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- =====================================================
+     WHO IT'S FOR
+     ===================================================== -->
 <section id="who">
   <div class="wrap">
-    <div class="section-num">04 / Who It's For</div>
-    <h2>Built for the people Adobe Express has been growing around.</h2>
-    <div class="grid-4" style="margin-top: 40px;">
-      <div class="card">
+    <div class="section-head reveal">
+      <div class="section-num">04 / Who It's For</div>
+      <h2>Built for the people Express has been growing around.</h2>
+    </div>
+    <div class="who-grid">
+      <div class="who-card reveal">
+        <div class="who-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
         <h3>Small business owners</h3>
-        <p>Running newsletters, mailing lists, and e-commerce campaigns on their own.</p>
+        <p>Running newsletters, mailing lists, and e-commerce campaigns solo.</p>
       </div>
-      <div class="card">
+      <div class="who-card reveal">
+        <div class="who-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
         <h3>In-house marketers</h3>
-        <p>At SMBs and mid-market companies without a dedicated email developer.</p>
+        <p>At SMBs without a dedicated email developer on staff.</p>
       </div>
-      <div class="card">
-        <h3>Freelance designers &amp; small agencies</h3>
-        <p>Managing email design for multiple client brands with fast iteration.</p>
+      <div class="who-card reveal">
+        <div class="who-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <h3>Freelancers & agencies</h3>
+        <p>Managing email design for multiple client brands at once.</p>
       </div>
-      <div class="card">
+      <div class="who-card reveal">
+        <div class="who-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
         <h3>Creator-entrepreneurs</h3>
-        <p>Running newsletter programs on ConvertKit, Substack, Beehiiv, MailerLite.</p>
+        <p>Running newsletter programs on ConvertKit, Substack, Beehiiv.</p>
       </div>
     </div>
   </div>
 </section>
 
+<!-- =====================================================
+     PRICING
+     ===================================================== -->
 <section id="pricing">
   <div class="wrap">
-    <div class="section-num">05 / Pricing</div>
-    <h2>Freemium. Free tier stays genuinely useful.</h2>
-    <div class="pricing" style="margin-top: 40px;">
-      <div class="plan">
+    <div class="section-head reveal">
+      <div class="section-num">05 / Pricing</div>
+      <h2>Simple, honest pricing. Free tier stays genuinely useful.</h2>
+      <p>Adobe retains 0% commission, so 100% of subscription income funds continued development.</p>
+    </div>
+    <div class="pricing">
+      <div class="plan reveal">
         <div class="plan-name">Free</div>
-        <div class="plan-price">$0<small> / month</small></div>
+        <div class="plan-price">$0 <small>/ month</small></div>
+        <p class="plan-desc">For light users sending one newsletter a month.</p>
         <ul>
           <li>3 email exports per month</li>
           <li>Standard MJML compilation</li>
-          <li>Preview across 4 major email clients</li>
+          <li>Preview across 4 major clients</li>
           <li>Copy-paste output to any ESP</li>
         </ul>
+        <a class="btn btn-ghost" href="#about">Start free</a>
       </div>
-      <div class="plan featured">
-        <div class="plan-name" style="color: var(--accent);">Pro</div>
-        <div class="plan-price">$9<small> / month</small></div>
+      <div class="plan featured reveal">
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">$9 <small>/ month</small></div>
+        <p class="plan-desc">For marketers sending weekly or more.</p>
         <ul>
           <li>Unlimited exports</li>
-          <li>Preview across 8 clients incl. Outlook 2016</li>
+          <li>Preview across 8 clients (incl. Outlook 2016)</li>
           <li>AI subject-line variants</li>
-          <li>AI alt-text for images</li>
+          <li>AI alt-text for accessibility</li>
           <li>Email-safe font fallback suggestions</li>
           <li>Priority rendering queue</li>
         </ul>
+        <a class="btn btn-primary" href="#about">Upgrade to Pro</a>
       </div>
-      <div class="plan">
+      <div class="plan reveal">
         <div class="plan-name">Agency</div>
-        <div class="plan-price">$24<small> / month</small></div>
+        <div class="plan-price">$24 <small>/ month</small></div>
+        <p class="plan-desc">For freelancers and agencies running multiple brands.</p>
         <ul>
           <li>Everything in Pro</li>
           <li>Shared brand kit presets across team</li>
@@ -308,41 +460,121 @@
           <li>Bulk export for multi-client workflows</li>
           <li>Priority support</li>
         </ul>
+        <a class="btn btn-ghost" href="#about">Contact sales</a>
       </div>
     </div>
   </div>
 </section>
 
-<section id="about">
+<!-- =====================================================
+     FAQ
+     ===================================================== -->
+<section id="faq">
   <div class="wrap">
-    <div class="section-num">06 / About the Builder</div>
-    <h2>Zareen Fatima. Full stack developer, 5 years of production experience.</h2>
-    <div class="about-grid" style="margin-top: 32px;">
-      <div>
-        <p class="body-ink">Based in Bengaluru, India. Specializes in React, React Native, and building AI-integrated frontend systems.</p>
-        <p>Every piece of the SendReady stack maps to already-shipped work: e-commerce frontend with Stripe integration, AI-integrated healthcare chatbot with direct LLM API integration, document parsing and transformation for a startup simulator dashboard, and a full React Native mobile app architected from the ground up at Milaan.</p>
-        <p>Pre-seed, solo, ready to commit full-time. The Adobe Fund for Design grant would fund the full 8-week build and marketplace launch by September 2026.</p>
-      </div>
-      <div class="contact-card">
-        <div class="label">Contact</div>
-        <p><strong>Zareen Fatima</strong></p>
-        <p>zareenarshh17@gmail.com</p>
-        <p>Bengaluru, Karnataka, India</p>
-        <p style="margin-top: 12px;"><a href="https://www.linkedin.com/in/zareen-fatima-476110244/" target="_blank" rel="noopener">LinkedIn &rarr;</a></p>
+    <div class="section-head reveal">
+      <div class="section-num">06 / FAQ</div>
+      <h2>Questions, answered.</h2>
+    </div>
+    <div class="faq reveal">
+      <details class="faq-item">
+        <summary class="faq-q">Why MJML instead of generating HTML from scratch?</summary>
+        <p class="faq-a">MJML is an open-source framework maintained by Mailjet and used in production at Airbnb. It already solves every Outlook quirk, every Gmail font substitution, every mobile reflow edge case. Building those fixes from scratch would take years and still miss cases. Using MJML makes SendReady's output as bulletproof as hand-coded email HTML from day one.</p>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Does this need API integrations with Mailchimp, Klaviyo, etc.?</summary>
+        <p class="faq-a">No. The output is pure HTML that pastes into any major email platform's code view or custom HTML block. That means no API keys, no OAuth, no webhook maintenance, and — importantly — no platform lock-in. You keep full control of your sending infrastructure.</p>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">How much AI is in this?</summary>
+        <p class="faq-a">Deliberately little. One LLM call generates three subject-line variants from the email's headline and body. One vision call generates WCAG-compliant alt-text per image for accessibility. That's it. The core conversion logic is deterministic MJML compilation — predictable, debuggable, and reliable in a way AI isn't.</p>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">When will this be available?</summary>
+        <p class="faq-a">SendReady is currently at blueprint stage. A working prototype demonstrating the full Express-to-HTML pipeline lands end of week 4 of the build. Marketplace-ready release targets September 2026.</p>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Who's building this?</summary>
+        <p class="faq-a">Zareen Fatima — full stack developer with 5 years of production experience, specializing in React, React Native, and AI-integrated frontend systems. Based in Bengaluru. Every piece of the SendReady stack maps to already-shipped work: Stripe billing, LLM API integration, document parsing, and full React Native app architecture.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     ABOUT / CTA
+     ===================================================== -->
+<section id="about" style="padding-bottom: 0;">
+  <div class="wrap">
+    <div class="cta-band reveal">
+      <div class="section-num">Get in touch</div>
+      <h2>Ready to close the last gap<br>in the Adobe Express workflow.</h2>
+      <p>SendReady is pre-launch and solo-built by Zareen Fatima in Bengaluru. For partnership, grant, or early-access inquiries, get in touch.</p>
+      <div class="cta-row" style="justify-content: center;">
+        <a class="btn btn-primary btn-lg" href="mailto:zareenarshh17@gmail.com">Email Zareen
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </a>
+        <a class="btn btn-ghost btn-lg" href="https://www.linkedin.com/in/zareen-fatima-476110244/" target="_blank" rel="noopener">Connect on LinkedIn</a>
       </div>
     </div>
   </div>
 </section>
 
+</main>
+
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
 <footer>
-  <div class="wrap footer-row">
-    <p>&copy; 2026 SendReady &middot; v1.0 / April 2026</p>
-    <div class="socials">
-      <a href="https://www.linkedin.com/in/zareen-fatima-476110244/" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://github.com/AreebAbdulGhani/SendReady" target="_blank" rel="noopener">GitHub</a>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">
+          <span class="logo-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          SendReady
+        </div>
+        <p>The design-to-email bridge Adobe Express never had. Built solo by Zareen Fatima in Bengaluru.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#product">Features</a></li>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="mailto:zareenarshh17@gmail.com">Contact</a></li>
+          <li><a href="https://github.com/AreebAbdulGhani/SendReady" target="_blank" rel="noopener">GitHub</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <div class="socials">
+          <a href="https://www.linkedin.com/in/zareen-fatima-476110244/" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
+          </a>
+          <a href="https://github.com/AreebAbdulGhani/SendReady" target="_blank" rel="noopener" aria-label="GitHub">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.5 5.74.5 12.01c0 5.08 3.29 9.38 7.86 10.9.57.1.78-.25.78-.55v-2.15c-3.2.7-3.87-1.37-3.87-1.37-.52-1.34-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.78 1.19 1.78 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.46.11-3.04 0 0 .96-.31 3.15 1.17a10.96 10.96 0 015.73 0c2.19-1.48 3.15-1.17 3.15-1.17.62 1.58.23 2.75.11 3.04.74.8 1.18 1.82 1.18 3.07 0 4.41-2.69 5.38-5.26 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.66.79.55A11.52 11.52 0 0023.5 12C23.5 5.74 18.27.5 12 .5z"/></svg>
+          </a>
+          <a href="mailto:zareenarshh17@gmail.com" aria-label="Email">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bot">
+      <p>© 2026 SendReady · v1.0 · Prepared by Zareen Fatima for Adobe Fund for Design</p>
+      <p>Made in Bengaluru, India</p>
     </div>
   </div>
 </footer>
 
+<script src="script.js"></script>
 </body>
 </html>
